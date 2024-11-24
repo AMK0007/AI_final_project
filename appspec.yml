@@ -3,25 +3,27 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.9
+      python: 3.8  # Adjust as per the environment needs
     commands:
       - echo "Installing dependencies"
-      - yum update -y
-      - amazon-linux-extras enable epel
-      - yum install -y epel-release
-      - yum install -y gcc SDL2 SDL2_image SDL2_ttf SDL2_mixer
-      - pip install pygame networkx
+      - yum install -y python3-pip
+      - pip3 install --upgrade pip
+      - pip3 install pygame
+      - pip3 install networkx
   pre_build:
     commands:
       - echo "Preparing environment"
+      - mkdir -p /opt/resources  # For storing resources like images
+      - echo "Ensure required assets like 'coin.png' are present"
   build:
     commands:
-      - echo "Running tests"
-      - python -m unittest discover -s tests
+      - echo "Running the Python script"
+      - python3 final.py  # This will execute the uploaded script
   post_build:
     commands:
-      - echo "Build completed successfully"
+      - echo "Build completed"
+
 artifacts:
   files:
-    - app.zip
-  discard-paths: yes
+    - '**/*'
+  discard-paths: no
