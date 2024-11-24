@@ -1,0 +1,34 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - echo "Installing system dependencies"
+      - yum install -y gcc SDL SDL_image SDL_ttf SDL_mixer
+      - echo "Installing Python dependencies"
+      - pip install pygame networkx
+  pre_build:
+    commands:
+      - echo "Setting up the application environment"
+      - mkdir -p app/static/images
+      - echo "Downloading assets"
+      - aws s3 cp s3://your-bucket-name/coin.png app/static/images/coin.png
+      - aws s3 cp s3://your-bucket-name/pothole.png app/static/images/pothole.png
+      - aws s3 cp s3://your-bucket-name/flag.png app/static/images/flag.png
+      - aws s3 cp s3://your-bucket-name/agent.png app/static/images/agent.png
+  build:
+    commands:
+      - echo "Running tests"
+      - python -m unittest discover -s tests
+      - echo "Building the package"
+      - zip -r app.zip app/
+  post_build:
+    commands:
+      - echo "Build completed successfully"
+artifacts:
+  files:
+    - app.zip
+  discard-paths: yes
+  base-directory: .
